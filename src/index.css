@@ -1,0 +1,116 @@
+body {
+  box-sizing: border-box;
+  max-width: 1466px;
+  margin: 0 auto;
+  display: flex;
+  font-family: "Lato", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image: url(/src/wp6373788.jpg);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+main {
+  margin: 10% auto;
+  display: flex;
+}
+@media only screen and (max-width: 1000px) {
+  main {
+    flex-direction: column;
+  }
+}
+
+.calc__body {
+  box-shadow: 0 3.2px 7.2px 0 rgb(0 0 0 / 13%), 0 0.6px 1.8px 0 rgb(0 0 0 / 11%);
+  background-color: white;
+  font-size: 2rem;
+  padding: 2rem 4rem 3rem 4rem;
+  border-radius: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0.5fr 1.5fr;
+  gap: 2rem 0px;
+  grid-template-areas:
+    "panel"
+    "buttons";
+}
+.panel {
+  grid-area: panel;
+  align-self: flex-end;
+  justify-self: flex-end;
+  text-align: right;
+}
+.buttons {
+  grid-area: buttons;
+  display: grid;
+  grid-template-columns: repeat(4, 7rem);
+  grid-template-rows: repeat(5, min-content);
+  gap: 2rem;
+  justify-items: center;
+}
+
+.button {
+  border-radius: 10px;
+  background-color: #f8edeb;
+  padding: 2rem 3rem;
+  border: none;
+  font-size: 2rem;
+}
+
+header {
+  margin-right: 5rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+  font-size: 5rem;
+  font-weight: 300;
+}
+
+.result {
+  font-size: 6rem;
+}
+
+.abort {
+  background-color: #fec5bb;
+  font-weight: 700;
+}
+
+.res {
+  background-color: #b7e4c7;
+  font-weight: 700;
+}
+
+.operation {
+  background-color: #fec89a;
+  font-weight: 700;
+}
+
+.special {
+  background-color: #fddbcb;
+}
+
+.punctuation {
+  background-color: #e0aea5;
+}
+
+.error {
+  font-size: 1.5rem;
+  color: red;
+}
