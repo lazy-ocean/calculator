@@ -46,6 +46,7 @@ main {
   grid-template-columns: 1fr;
   grid-template-rows: 0.5fr 1.5fr;
   gap: 2rem 0px;
+  width: fit-content;
   grid-template-areas:
     "panel"
     "buttons";
@@ -60,7 +61,7 @@ main {
   grid-area: buttons;
   display: grid;
   grid-template-columns: repeat(4, 7rem);
-  grid-template-rows: repeat(5, min-content);
+  grid-template-rows: repeat(6, min-content);
   gap: 2rem;
   justify-items: center;
 }
@@ -71,6 +72,13 @@ main {
   padding: 2rem 3rem;
   border: none;
   font-size: 2rem;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.button:active {
+  outline: none;
+  transform: translate(0.1rem, 0.1rem);
 }
 
 header {
@@ -95,6 +103,8 @@ header {
 .res {
   background-color: #b7e4c7;
   font-weight: 700;
+  grid-column: 3 / span 2;
+  width: 100%;
 }
 
 .operation {
@@ -113,4 +123,41 @@ header {
 .error {
   font-size: 1.5rem;
   color: red;
+}
+
+.long {
+  grid-column: 1 / span 2;
+  width: 100%;
+}
+
+.erase {
+  padding: 2rem 2.5rem;
+}
+
+.txt {
+  font-size: 2rem;
+  margin: 2rem 0;
+}
+
+.fadeOutUp {
+  animation: fadeOutUp ease 1s;
+}
+@keyframes fadeOutUp {
+  0% {
+    opacity: 1;
+  }
+
+  30% {
+    opacity: 0;
+    transform: translate3d(0, -20%, 0);
+  }
+  60% {
+    opacity: 0;
+    transform: translate3d(0, 40%, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }

@@ -1,62 +1,120 @@
 import "./App.css";
 import React, { useState } from "react";
-import styled, { keyframes } from "styled-components";
-import { fadeOutUp } from "react-animations";
-
-/*const fadingOutAnimation = keyframes`${fadeOutUp}`;
-const FadingDiv = styled.div`
-    animation: ${(current) =>
-      current === "res" ? `1s ${fadingOutAnimation}` : "none"};
-  `;*/
+import { evaluate, format } from "mathjs";
+import classNames from "classnames";
 
 function App() {
-  let [value, setValue] = useState("0");
+  let [value, setValue] = useState(0);
   let [formula, setFormula] = useState("");
   let [error, setError] = useState(false);
+  let [state, setState] = useState("number");
+  let [fadeOutIn, setFadeOutIn] = useState(false);
 
   const handleValue = (v) => {
-    let value = v.toString().substr(0, 9);
+    let fr = v.toString().split(".");
+    let value = v;
+    if (fr[1] && fr[1].length > 6) {
+      value = format(value, 6);
+    }
+    if (value > 10000000) {
+      setError("This number is too big for a handy calculator :(");
+      value = value.toString().substr(0, 8);
+    }
     setValue(value);
   };
 
   const handleChange = (v, role) => {
+    setFadeOutIn(false);
     switch (role) {
+      case "number":
+        if (error) setError(false);
+        if (value > 10000000) {
+          setError("This number is too big for a handy calculator :(");
+        } else {
+          setFormula((formula += v));
+          handleValue(evaluate(formula));
+        }
+        setState(role);
+        break;
       case "operation":
-        setFormula((formula += ` ${v} `));
+        if (error) setError(false);
+        if (state === "operation") {
+          let temp = formula.slice(0, -2);
+          setFormula((temp += ` ${v} `));
+        } else {
+          setFormula((formula += ` ${v} `));
+        }
+        setState(role);
         break;
       case "punctuation":
-        handleValue((value += v));
-        formula ? setFormula((formula += v)) : setFormula(`0${v}`);
-        break;
-      case "number":
-        if (value.length >= 9) {
-          setError(true);
-          setFormula(formula);
+        if (state !== "number") return;
+        let arr = formula.split(" ");
+        if (isNaN(`${arr[arr.length - 1]}${v}`)) {
+          setError("This is not a number");
         } else {
           setFormula((formula += v));
-          handleValue(eval(formula));
+          handleValue(evaluate(formula));
         }
-        break;
-      case "abort":
-        setError(false);
-        setFormula("");
-        setValue("0");
+        setState(role);
         break;
       case "special":
+        /// TODO: % only after number!
         if (v === "%") {
-          setFormula((formula += v));
           let f = formula.split(" ");
-          let percentage = (~~f[0] / 100) * f[2].slice(0, -1);
-          handleValue(eval(`${f[0]}${f[1]}${percentage}`));
+          if (f.length < 2) {
+            let temp = evaluate(`0.01 * ${value}`);
+            handleValue(temp);
+            setFormula(temp);
+          } else {
+            let percentage = (~~f[0] / 100) * f[2];
+            let temp = evaluate(`${f[0]}${f[1]}${percentage}`);
+            handleValue(temp);
+            setFormula(`${f[0]} ${f[1]} ${percentage}`);
+          }
+          setState(role);
         } else if (v === "π") {
-          setFormula((formula += "3.14159"));
+          if (isNaN(`${value}3.14159`)) {
+            setError("This is not a number");
+          } else {
+            setFormula((formula += "3.14159"));
+            handleValue(evaluate(formula));
+          }
         } else {
-          setFormula((formula += "2.71828"));
+          if (isNaN(`${value}2.71828`)) {
+            setError("This is not a number");
+          } else {
+            setFormula((formula += "2.71828"));
+            handleValue(evaluate(formula));
+          }
         }
         break;
       case "res":
+        setFadeOutIn(true);
         setFormula(value);
         setValue("0");
+
+        break;
+      case "abort":
+        setFormula("");
+        setValue("0");
+        setError(false);
+        break;
+      case "erase":
+        setError(false);
+        let temp;
+        if (state === "operation") {
+          temp = formula.slice(0, -3);
+          setFormula(temp);
+          temp ? handleValue(evaluate(temp)) : setValue(0);
+          setState("number");
+        } else {
+          temp = formula.slice(0, -1);
+          temp ? handleValue(evaluate(temp)) : setValue(0);
+          setFormula(temp);
+          try {
+            handleValue(evaluate(temp));
+          } catch (e) {}
+        }
         break;
       default:
         break;
@@ -66,13 +124,11 @@ function App() {
   return (
     <div className="calc__body">
       <div className="panel">
-        <div>{formula}</div>
-        <div className="result">{value}</div>
-        {error && (
-          <p className="error">
-            This number is too long for a handy calculator :(
-          </p>
-        )}
+        <div className={classNames({ fadeOutUp: fadeOutIn })}>{formula}</div>
+        <div className={classNames("result", { fadeOutUp: fadeOutIn })}>
+          {value}
+        </div>
+        {error && <p className="error">{error}</p>}
       </div>
       <div className="buttons">
         {buttons.map((btn) => (
@@ -104,10 +160,11 @@ const buttons = [
   { value: "2", role: "number" },
   { value: "3", role: "number" },
   { value: "+", role: "operation" },
-  { value: "0", role: "number" },
+  { value: "0", role: "number", long: true },
   { value: ".", role: "punctuation" },
+  { value: "⌫", role: "erase" },
+  { value: "C", role: "abort", long: true },
   { value: "=", role: "res" },
-  { value: "C", role: "abort" },
 ];
 /*let draft = (
   <div className="button">
@@ -118,11 +175,12 @@ const buttons = [
 const Button = (prop) => {
   let { btn, onClick } = prop;
   let value = btn.value === "x" ? "*" : btn.value;
+  let classList = classNames(btn.role, {
+    button: true,
+    long: btn.long,
+  });
   return (
-    <button
-      className={`button ${btn.role}`}
-      onClick={() => onClick(value, btn.role)}
-    >
+    <button className={classList} onClick={() => onClick(value, btn.role)}>
       {btn.value}
     </button>
   );
