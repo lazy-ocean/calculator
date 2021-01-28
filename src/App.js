@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { evaluate, format } from "mathjs";
 import classNames from "classnames";
 
@@ -9,6 +9,40 @@ function App() {
   let [error, setError] = useState(false);
   let [state, setState] = useState("number");
   let [fadeOutIn, setFadeOutIn] = useState(false);
+
+  let handleKeyDown = (event) => {
+    event.preventDefault();
+    let { key } = event;
+
+    if (key === "Enter") handleChange(key, "res");
+
+    if (/\d/.test(key)) {
+      event.preventDefault();
+      handleChange(parseInt(key, 10), "number");
+    } else if (operations.includes(key)) {
+      event.preventDefault();
+      handleChange(key, "operation");
+    } else if (key === ".") {
+      event.preventDefault();
+      handleChange(key, "punctuation");
+    } else if (key === "%") {
+      event.preventDefault();
+      handleChange(key, "special");
+    } else if (key === "Backspace") {
+      event.preventDefault();
+      handleChange(key, "erase");
+    } else if (key === "Clear") {
+      event.preventDefault();
+      handleChange(key, "abort");
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  });
 
   const handleValue = (v) => {
     let fr = v.toString().split(".");
@@ -58,7 +92,6 @@ function App() {
         setState(role);
         break;
       case "special":
-        /// TODO: % only after number!
         if (v === "%") {
           let f = formula.split(" ");
           if (f.length < 2) {
@@ -94,7 +127,6 @@ function App() {
           setFormula(value);
           setValue("0");
         }, 250);
-
         break;
       case "abort":
         setFormula("");
@@ -104,15 +136,22 @@ function App() {
       case "erase":
         setError(false);
         let temp;
-        if (state === "operation") {
+        if (
+          formula[formula.length - 1] === " " ||
+          operations.includes(formula[formula.length - 1])
+        ) {
           temp = formula.slice(0, -3);
           setFormula(temp);
-          temp ? handleValue(evaluate(temp)) : setValue(0);
+          handleValue(evaluate(temp));
           setState("number");
         } else {
           temp = formula.toString().slice(0, -1);
-          temp ? handleValue(evaluate(temp)) : setValue(0);
-          setFormula(temp);
+          if (!temp) {
+            handleValue(0);
+            setFormula("");
+          } else {
+            setFormula(temp);
+          }
           try {
             handleValue(evaluate(temp));
           } catch (e) {}
@@ -147,6 +186,7 @@ function App() {
   );
 }
 
+const operations = ["-", "+", "/", "*"];
 const buttons = [
   { value: "%", role: "special" },
   { value: "π", role: "special" },
