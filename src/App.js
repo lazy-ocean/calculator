@@ -31,7 +31,7 @@ function App() {
         if (value > 10000000) {
           setError("This number is too big for a handy calculator :(");
         } else {
-          setFormula((formula += v));
+          formula !== "0" ? setFormula((formula += v)) : setFormula(v);
           handleValue(evaluate(formula));
         }
         setState(role);
@@ -62,7 +62,7 @@ function App() {
         if (v === "%") {
           let f = formula.split(" ");
           if (f.length < 2) {
-            let temp = evaluate(`0.01 * ${value}`);
+            let temp = format(evaluate(`0.01 * ${value}`), 6);
             handleValue(temp);
             setFormula(temp);
           } else {
@@ -90,8 +90,10 @@ function App() {
         break;
       case "res":
         setFadeOutIn(true);
-        setFormula(value);
-        setValue("0");
+        setTimeout(() => {
+          setFormula(value);
+          setValue("0");
+        }, 250);
 
         break;
       case "abort":
@@ -108,7 +110,7 @@ function App() {
           temp ? handleValue(evaluate(temp)) : setValue(0);
           setState("number");
         } else {
-          temp = formula.slice(0, -1);
+          temp = formula.toString().slice(0, -1);
           temp ? handleValue(evaluate(temp)) : setValue(0);
           setFormula(temp);
           try {
@@ -124,7 +126,9 @@ function App() {
   return (
     <div className="calc__body">
       <div className="panel">
-        <div className={classNames({ fadeOutUp: fadeOutIn })}>{formula}</div>
+        <div className={classNames({ formula: true, fadeOutUp: fadeOutIn })}>
+          {formula}
+        </div>
         <div className={classNames("result", { fadeOutUp: fadeOutIn })}>
           {value}
         </div>
