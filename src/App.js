@@ -49,6 +49,10 @@ function App() {
     let value = v;
     if (fr[1] && fr[1].length > 6) {
       value = format(value, 6);
+      let arr = formula.split(" ");
+      let num = Number(arr[arr.length - 1]);
+      arr[arr.length - 1] = format(num, 6);
+      setFormula(arr.join(" "));
     }
     if (value > 10000000) {
       setError("This number is too big for a handy calculator :(");
