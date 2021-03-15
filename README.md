@@ -2,7 +2,7 @@
 
 This is a simple calculator that supports basic arithmetic calculations on integers.
 All calculations made using [mathjs](https://mathjs.org/) library.
-Keyboard controls is also available.
+Keyboard controls are also available.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

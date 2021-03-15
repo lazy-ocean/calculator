@@ -6,6 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-image: url(/src/wp6373788.jpg);
+  background-size: cover;
 }
 
 code {
