@@ -2,31 +2,9 @@ import "./App.css";
 import React, { useEffect, useState } from "react";
 import { evaluate, format } from "mathjs";
 import classNames from "classnames";
-
-const operations = ["-", "+", "/", "*"];
-const buttons = [
-  { value: "%", role: "special" },
-  { value: "π", role: "special" },
-  { value: "e", role: "special" },
-  { value: "/", role: "operation" },
-  { value: "7", role: "number" },
-  { value: "8", role: "number" },
-  { value: "9", role: "number" },
-  { value: "x", role: "operation" },
-  { value: "4", role: "number" },
-  { value: "5", role: "number" },
-  { value: "6", role: "number" },
-  { value: "-", role: "operation" },
-  { value: "1", role: "number" },
-  { value: "2", role: "number" },
-  { value: "3", role: "number" },
-  { value: "+", role: "operation" },
-  { value: "0", role: "number", long: true },
-  { value: ".", role: "punctuation" },
-  { value: "⌫", role: "erase" },
-  { value: "C", role: "abort", long: true },
-  { value: "=", role: "res" },
-];
+import OPERATIONS from "./utils/operations";
+import keyControls from "./utils/keyControls";
+import Buttons from "./components/buttons/Buttons";
 
 function App() {
   const [value, setValue] = useState(0);
@@ -133,7 +111,7 @@ function App() {
         let temp;
         if (
           formula[formula.length - 1] === " " ||
-          operations.includes(formula[formula.length - 1])
+          OPERATIONS.includes(formula[formula.length - 1])
         ) {
           temp = formula.slice(0, -3);
           setFormula(temp);
@@ -160,37 +138,14 @@ function App() {
     }
   };
 
-  const handleKeyDown = (event) => {
-    event.preventDefault();
-    const { key } = event;
-
-    if (key === "Enter") handleChange(key, "res");
-
-    if (/\d/.test(key)) {
-      event.preventDefault();
-      handleChange(parseInt(key, 10), "number");
-    } else if (operations.includes(key)) {
-      event.preventDefault();
-      handleChange(key, "operation");
-    } else if (key === ".") {
-      event.preventDefault();
-      handleChange(key, "punctuation");
-    } else if (key === "%") {
-      event.preventDefault();
-      handleChange(key, "special");
-    } else if (key === "Backspace") {
-      event.preventDefault();
-      handleChange(key, "erase");
-    } else if (key === "Clear") {
-      event.preventDefault();
-      handleChange(key, "abort");
-    }
-  };
-
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", () => {
+      keyControls(handleChange);
+    });
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", () => {
+        keyControls(handleChange);
+      });
     };
   });
 
@@ -201,27 +156,9 @@ function App() {
         <div className={classNames("result", { fadeOutUp: fadeOutIn })}>{value}</div>
         {error && <p className="error">{error}</p>}
       </div>
-      <div className="buttons">
-        {buttons.map((btn) => (
-          <Button key={btn.value} btn={btn} onClick={(v, role) => handleChange(v, role)} />
-        ))}
-      </div>
+      <Buttons handleChange={handleChange} />
     </div>
   );
 }
-
-const Button = (prop) => {
-  const { btn, onClick } = prop;
-  const value = btn.value === "x" ? "*" : btn.value;
-  const classList = classNames(btn.role, {
-    button: true,
-    long: btn.long,
-  });
-  return (
-    <button type="button" className={classList} onClick={() => onClick(value, btn.role)}>
-      {btn.value}
-    </button>
-  );
-};
 
 export default App;

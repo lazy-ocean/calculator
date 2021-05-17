@@ -19,5 +19,6 @@ module.exports = {
     "no-shadow": "warn",
     "no-bitwise": "warn",
     "no-console": "off",
+    "react/prop-types": 0,
   },
 };
