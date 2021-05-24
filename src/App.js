@@ -17,7 +17,11 @@ function App() {
   const [state, setState] = useState("number");
   const [fadeOutIn, setFadeOutIn] = useState(false);
 
+  // eslint-disable-next-line consistent-return
   const handleValue = (expression) => {
+    if (!expression) {
+      return setResult(0);
+    }
     try {
       let value = evaluate(expression);
       const fractions = value.toString().split(".");
@@ -37,7 +41,6 @@ function App() {
       setResult(value);
     } catch (e) {
       // TODO: modal
-      setError(MESSAGES.ERROR_OTHER);
     }
   };
 
@@ -114,28 +117,16 @@ function App() {
       case "erase": {
         setError(false);
         let temp;
-        if (
-          formula[formula.length - 1] === " " ||
-          OPERATIONS.includes(formula[formula.length - 1])
-        ) {
+        const erasedSymbol = formula[formula.length - 1];
+        if (erasedSymbol === " " || OPERATIONS.includes(erasedSymbol)) {
           temp = formula.slice(0, -3);
-          setFormula(temp);
-          handleValue(temp);
           setState("number");
         } else {
           temp = formula.toString().slice(0, -1);
-          if (!temp) {
-            handleValue(0);
-            setFormula("");
-          } else {
-            setFormula(temp);
-          }
-          try {
-            handleValue(temp);
-          } catch (e) {
-            setError(MESSAGES.ERROR_OTHER);
-          }
+          if (!temp) handleValue(0);
         }
+        setFormula(temp);
+        handleValue(temp);
         break;
       }
       default:
