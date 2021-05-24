@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { evaluate, format } from "mathjs";
 import classNames from "classnames";
 import OPERATIONS from "./utils/operations";
+import MESSAGES from "./utils/messages";
 import keyControls from "./utils/keyControls";
 import Buttons from "./components/buttons/Buttons";
 
@@ -27,16 +28,16 @@ function App() {
         const num = Number(arr[arr.length - 1]);
         arr[arr.length - 1] = format(num, 6);
         setFormula(arr.join(" "));
-        setError("Your number is rounded");
+        setError(MESSAGES.MESSAGE_ROUND);
       }
       if (value > 10000000) {
-        setError("This number is too big for a handy calculator :(");
+        setError(MESSAGES.ERROR_BIG_NUMBER);
         value = value.toString().substr(0, 8);
       }
       setResult(value);
     } catch (e) {
       // TODO: modal
-      setError("Something went wrong");
+      setError(MESSAGES.ERROR_OTHER);
     }
   };
 
@@ -46,7 +47,7 @@ function App() {
     switch (role) {
       case "number":
         if (result > 10000000) {
-          setError("This number is too big for a handy calculator :(");
+          setError(MESSAGES.ERROR_BIG_NUMBER);
         } else {
           formula !== "0" ? setFormula((formula += value)) : setFormula(value);
           handleValue(formula);
@@ -66,7 +67,7 @@ function App() {
         if (state !== "number") return;
         const arr = formula.split(" ");
         if (Number.isNaN(`${arr[arr.length - 1]}${value}`)) {
-          setError("This is not a number");
+          setError(MESSAGES.ERROR_NAN);
         } else {
           setFormula((formula += value));
           handleValue(formula);
@@ -91,7 +92,7 @@ function App() {
           setState(role);
         } else if (value === "π" || value === "e") {
           if (isNaN(`${result}3.1`)) {
-            setError("This is not a number");
+            setError(MESSAGES.ERROR_NAN);
           } else {
             value === "π" ? setFormula((formula += "3.14159")) : setFormula((formula += "2.71828"));
             handleValue(formula);
@@ -132,7 +133,7 @@ function App() {
           try {
             handleValue(temp);
           } catch (e) {
-            setError("Something went wrong");
+            setError(MESSAGES.ERROR_OTHER);
           }
         }
         break;
