@@ -1,0 +1,11 @@
+.error {
+  font-size: 1.5rem;
+  color: red;
+}
+
+.panel {
+  grid-area: panel;
+  align-self: flex-end;
+  justify-self: flex-end;
+  text-align: right;
+}

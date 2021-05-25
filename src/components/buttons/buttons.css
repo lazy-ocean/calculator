@@ -1,0 +1,57 @@
+.buttons {
+  grid-area: buttons;
+  display: grid;
+  grid-template-columns: repeat(4, 7rem);
+  grid-template-rows: repeat(6, min-content);
+  gap: 2rem;
+  justify-items: center;
+}
+
+.button {
+  border-radius: 10px;
+  background-color: #f8edeb;
+  padding: 2rem 3rem;
+  border: none;
+  font-size: 2rem;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.button:active {
+  outline: none;
+  transform: translate(0.1rem, 0.1rem);
+}
+
+.abort {
+  background-color: #fec5bb;
+  font-weight: 700;
+}
+
+.res {
+  background-color: #b7e4c7;
+  font-weight: 700;
+  grid-column: 3 / span 2;
+  width: 100%;
+}
+
+.operation {
+  background-color: #fec89a;
+  font-weight: 700;
+}
+
+.special {
+  background-color: #fddbcb;
+}
+
+.punctuation {
+  background-color: #e0aea5;
+}
+
+.long {
+  grid-column: 1 / span 2;
+  width: 100%;
+}
+
+.erase {
+  padding: 2rem 2.5rem;
+}

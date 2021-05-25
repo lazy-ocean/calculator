@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import "./buttons.css";
 
 const Button = ({ btn, onClick }) => {
   const value = btn.value === "x" ? "*" : btn.value;

@@ -1,6 +1,7 @@
 import React from "react";
 import BUTTONS from "../../utils/buttonsHashMap";
 import Button from "./Button";
+import "./buttons.css";
 
 const Buttons = ({ handleChange }) => (
   <div className="buttons">

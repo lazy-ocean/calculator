@@ -3,11 +3,11 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
 import { evaluate, format } from "mathjs";
-import classNames from "classnames";
 import OPERATIONS from "./utils/operations";
 import MESSAGES from "./utils/messages";
 import keyControls from "./utils/keyControls";
 import Buttons from "./components/buttons/Buttons";
+import Panel from "./components/panel/Panel";
 
 function App() {
   const [result, setResult] = useState(0);
@@ -23,11 +23,10 @@ function App() {
       return setResult(0);
     }
     try {
-      let value = evaluate(expression);
+      let value = format(evaluate(expression), 6);
       const fractions = value.toString().split(".");
       if (fractions[1] && fractions[1].length > 6) {
         // To round only the last entered number
-        value = format(value, 6);
         const arr = formula.split(" ");
         const num = Number(arr[arr.length - 1]);
         arr[arr.length - 1] = format(num, 6);
@@ -147,11 +146,7 @@ function App() {
 
   return (
     <div className="calc__body">
-      <div className="panel">
-        <div className={classNames({ formula: true, fadeOutUp: fadeOutIn })}>{formula}</div>
-        <div className={classNames("result", { fadeOutUp: fadeOutIn })}>{result}</div>
-        {error && <p className="error">{error}</p>}
-      </div>
+      <Panel result={result} formula={formula} fadeOutIn={fadeOutIn} error={error} />
       <Buttons handleChange={handleChange} />
     </div>
   );
