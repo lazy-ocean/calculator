@@ -9,10 +9,7 @@ const operationsMap = {
   Enter: "res",
 };
 
-const keyControls = (handleChange) => {
-  event.preventDefault();
-  const { key } = event;
-
+const keyControls = (key, handleChange) => {
   if (/\d/.test(key)) {
     handleChange(parseInt(key, 10), "number");
   } else if (OPERATIONS.includes(key)) {

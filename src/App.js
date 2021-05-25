@@ -134,15 +134,12 @@ function App() {
   };
 
   useEffect(() => {
-    document.addEventListener("keydown", () => {
-      keyControls(handleChange);
-    });
+    const onKeyDown = ({ key }) => keyControls(key, handleChange);
+    document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.removeEventListener("keydown", () => {
-        keyControls(handleChange);
-      });
+      document.removeEventListener("keydown", onKeyDown);
     };
-  });
+  }, []);
 
   return (
     <div className="calc__body">
