@@ -1,11 +1,6 @@
 import { render, fireEvent } from "@testing-library/react";
 import React from "react";
-import App from "./App";
-
-test("initial state", () => {
-  const { getByTestId } = render(<App />);
-  expect(getByTestId("result")).toHaveTextContent(0);
-});
+import App from "../../App";
 
 test("keypress", () => {
   const { getByTestId } = render(<App />);

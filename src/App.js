@@ -68,7 +68,7 @@ function App() {
       case "punctuation": {
         if (state !== "number") return;
         const arr = formula.split(" ");
-        if (Number.isNaN(`${arr[arr.length - 1]}${value}`)) {
+        if (isNaN(`${arr[arr.length - 1]}${value}`)) {
           setError(MESSAGES.ERROR_NAN);
         } else {
           setFormula((formula += value));

@@ -7,7 +7,11 @@ const Panel = ({ formula, fadeOutIn, result, error }) => (
   <div className="panel">
     <Formula formula={formula} fadeOutUp={fadeOutIn} />
     <Result result={result} fadeOutUp={fadeOutIn} />
-    {error && <p className="error">{error}</p>}
+    {error && (
+      <p className="error" data-testid="error">
+        {error}
+      </p>
+    )}
   </div>
 );
 

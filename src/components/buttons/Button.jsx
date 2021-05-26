@@ -9,7 +9,12 @@ const Button = ({ btn, onClick }) => {
     long: btn.long,
   });
   return (
-    <button type="button" className={classList} onClick={() => onClick(value, btn.role)}>
+    <button
+      type="button"
+      data-testid={`btn-${btn.value}`}
+      className={classList}
+      onClick={() => onClick(value, btn.role)}
+    >
       {btn.value}
     </button>
   );
